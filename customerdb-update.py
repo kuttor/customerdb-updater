@@ -21,7 +21,7 @@ __version__ = '1.0.0'
 
 from docopt import DocoptExit, docopt
 import customerdbsqllib as cdb  # Lib of CustomerDB SQL statments
-from envscraper import parser, source_code as sc  # Exports EnvInject vars by build number
+from scrapenv import parser, source_code as sc  # Exports EnvInject vars by build number
 
 
 def main():

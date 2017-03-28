@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+'''scrapenv
+
+Usage:
+    customerdb-update [ -b | --build-number ] <bnum>
+    customerdb-update [ -h | --version ]
+    customerdb-update [ -v | --version ]
+
+Options:
+    -h --help           Show this screen.
+    -v --version        Show version information
+    -b --build-number   Input Jenkins build-number
+
+'''
+from bs4 import BeautifulSoup
+from requests import get
+
+
+# Gets source code -- raw
+def source_code(job="num", usr="string", pwd="string"):
+    url = 'http://pprddpsos400.corp.intuit.net:{}/job/\
+    Pipeline%20-%20IDPS%20Operations/1147/injectedEnvVars/'.format(job)
+    html = get(url, auth=(usr, pwd))
+    scrape = BeautifulSoup(html.content, 'html.parser')
+    return scrape
+
+
+# Parsing raw source code
+# Snaggin Tables, Tds, Trs, key-valuing the actual text
+def parser(scrape):
+    table = {}.find('table').format(scrape)
+    for row in table.findAll('td'):
+        print('%r' % str(row.text))
+
+    # print [ col.renderContents() for col in row.findAll('td') ]
+
+
+def main():
+
+
+# Let there be truth
+if __name__ == "__main__":
+    main()

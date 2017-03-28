@@ -17,7 +17,7 @@ from requests import get
 
 
 # Gets source code -- raw
-def source_code(job="num", usr="string", pwd="string"):
+def source_code(job, usr, pwd):
     url = 'http://pprddpsos400.corp.intuit.net:{}/job/\
     Pipeline%20-%20IDPS%20Operations/1147/injectedEnvVars/'.format(job)
     html = get(url, auth=(usr, pwd))

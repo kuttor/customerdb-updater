@@ -61,6 +61,7 @@ def main():
         username = args['<username>']
         password = args['<password>']
 
+        # Kickoff
         raw = html_table_scraper(job_num, username, password)
         print to_dict(raw)
 

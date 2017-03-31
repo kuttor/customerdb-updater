@@ -34,7 +34,7 @@ def html_table_scraper(job, usr, pwd):
     soup = bs(html.content, 'html.parser')
     return soup
 
-# Currently not converting properly
+
 def to_dict(soup):
     """Converts scraped HTML tables to key-value dictionay."""
     list = [[cell.get_text().strip()
@@ -47,7 +47,7 @@ def to_dict(soup):
         if ',' in str_item:
             key,value = str_item.split(',')
             kv[key] = value
-    print kv
+    return kv
 
 
 # The island of misfit toys

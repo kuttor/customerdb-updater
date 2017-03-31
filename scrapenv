@@ -61,9 +61,9 @@ def main():
         username = args['<username>']
         password = args['<password>']
 
-        # Kickoff
-        raw = html_table_scraper(job_num, username, password)
-        print to_dict(raw)
+        # Key Values
+        env_vars = to_dict(html_table_scraper(job_num, username, password))
+        print env_vars
 
     except DocoptExit as e:
         print(e.message)

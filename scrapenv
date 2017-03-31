@@ -22,8 +22,13 @@ __version__ = '1.0.0'
 
 from docopt import docopt, DocoptExit
 from bs4 import BeautifulSoup as bs
+from MySQLdb import connect
 from requests import get
 
+
+#==============================================================================
+# Converts Jenkins Environment Variables to Dictionary
+#==============================================================================
 
 def html_table_scraper(job, usr, pwd):
     """Scrapes Jenkins environment variable page by job number."""
@@ -48,6 +53,22 @@ def to_dict(soup):
             key,value = str_item.split(',')
             kv[key] = value
     return kv
+
+
+#==============================================================================
+# Uses values from converted dictionary for SQL update/insert scripts
+#==============================================================================
+
+def execute(query):
+    """Executes SQL Statements."""
+    with cnx:
+        cnx.cursor().cur.execute(query)
+
+
+def update_main_mysql_tables():
+    """Updates CustomerDB contact, project, BU."""
+    with cnx:
+        cnx.cursor().cur.execute(query)
 
 
 # The island of misfit toys

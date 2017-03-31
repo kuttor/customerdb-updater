@@ -1,59 +1,67 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-'''scrapenv
+"""
+customerdb-updater.py
+Import deploy details into the CustomerDB
 
 Usage:
-    customerdb-update job <job_num> -u <username> -p <password>
-    customerdb-update --help | --version 
+  customerdb-update -j <job_num> -u <username> -p <password>
+  customerdb-update --help | --version
 
 Options:
-    -h --help           Show this screen
-    -v --version        Show version information
-    -b --build-number   Input Jenkins job-number
-    -u --username       Input Jenkins username
-    -p --password       Input Jenkins password
-
-'''
+  -h --help           Show this screen
+  -v --version        Show version information
+  -j --job-number     Input Jenkins job-number
+  -u --username       Input Jenkins username
+  -p --password       Input Jenkins password
+"""
 __author__ = 'Andrew Kuttor'
 __email__ = 'andrew_kuttor@intuit.com'
 __version__ = '1.0.0'
 
-from docopt import DocoptExit, docopt
-from bs4 import BeautifulSoup
+from docopt import docopt, DocoptExit
+from bs4 import BeautifulSoup as bs
 from requests import get
 
 
-# Extracts raw HTML date of the Jenkins env-var page
-# Inputs: job number, Jenkins username and password
-def scraped_html(job, usr, pwd):
+def html_table_scraper(job, usr, pwd):
+    """Scrapes Jenkins environment variable page by job number."""
     url = "http://pprddpsos400.corp.intuit.net:8080/job/" \
           "Pipeline%20-%20IDPS%20Operations/{}/injectedEnvVars/".format(job)
 
     html = get(url, auth=(usr, pwd))
-    soup = BeautifulSoup(html.content, 'html.parser')
-
+    soup = bs(html.content, 'html.parser')
     return soup
 
-
-# Parses scraped html data and converts to key/value dictionary
-# Inputs: scraped/raw data
+# Currently not converting properly
 def to_dict(soup):
-    list = [[
-        cell.get_text().strip()
+    """Converts scraped HTML tables to key-value dictionay."""
+    list = [[cell.get_text().strip()
         for cell in row.find_all(['th', 'td'])]
         for row in soup.find_all('tr')]
 
-    return list
+    kv = {}
+    for item in list:
+        str_item = str(item)
+        if ',' in str_item:
+            key,value = str_item.split(',')
+            kv[key] = value
+    print kv
 
 
+# The island of misfit toys
 def main():
+    """Main function to encapsulate script."""
     try:
         args = docopt(__doc__, version='CustomerDB-Update - v1.0')
-        job = args['<job_num>']
-        user = args['<username>']
-        pssw = args['<password>']
 
-        raw = scraped_html(job, user, pssw)
+        # Convert args to vars
+        job_num = args['<job_num>']
+        username = args['<username>']
+        password = args['<password>']
+
+        raw = html_table_scraper(job_num, username, password)
         print to_dict(raw)
 
     except DocoptExit as e:
